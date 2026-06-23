@@ -111,3 +111,4 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
         </>
     )
 }
+export {};
