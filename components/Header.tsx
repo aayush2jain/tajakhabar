@@ -4,7 +4,11 @@ import NavItems from "@/components/NavItems";
 import UserDropdown from "@/components/UserDropdown";
 import {searchStocks} from "@/lib/actions/finnhub.action";
 
-const Header = async ({user}:{user:User}) => {
+const Header = async ({
+                          user,
+                      }: {
+    user?: User | null;
+}) => {
     const initialStocks = await searchStocks();
 
     return (
@@ -17,7 +21,21 @@ const Header = async ({user}:{user:User}) => {
                     <NavItems initialStocks = {initialStocks} />
                 </nav>
 
-                <UserDropdown user={user} initialStocks = {initialStocks} />
+                <div className="flex items-center gap-4">
+                    {user ? (
+                        <UserDropdown
+                            user={user}
+                            initialStocks={initialStocks}
+                        />
+                    ) : (
+                        <Link
+                            href="/sign-in"
+                            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent"
+                        >
+                            Sign In
+                        </Link>
+                    )}
+                </div>
             </div>
         </header>
     )

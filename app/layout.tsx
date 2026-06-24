@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Taja Khabar",
+  title: "Signalist",
   description: "Track real time stock prices",
 };
 

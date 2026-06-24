@@ -7,16 +7,48 @@ import {Loader2,  TrendingUp,Star} from "lucide-react";
 import Link from "next/link";
 import {searchStocks} from "@/lib/actions/finnhub.action";
 import {useDebounce} from "@/hooks/useDebounce";
+import {toggleWatchlist} from "@/lib/actions/watchlist.actions";
+import {getCurrentUserWatchlistSymbols} from "@/lib/actions/watchlist.actions";
 
-export default function SearchCommand({ renderAs = 'button', label = 'Add stock', initialStocks }: SearchCommandProps) {
+export default  function SearchCommand({ renderAs = 'button', label = 'Add stock', initialStocks }: SearchCommandProps) {
     const [open, setOpen] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
     const [loading, setLoading] = useState(false)
     const [stocks, setStocks] = useState<StockWithWatchlistStatus[]>(initialStocks);
-
+    const [watchlistSymbols, setWatchlistSymbols] = useState<string[]>([]);
     const isSearchMode = !!searchTerm.trim();
     const displayStocks = isSearchMode ? stocks : stocks?.slice(0, 10);
+    const handleToggleWatchlist = async (
+        e: React.MouseEvent,
+        symbol: string,
+        company: string
+    ) => {
+        e.preventDefault();
+        e.stopPropagation();
 
+        try {
+            const result = await toggleWatchlist(
+                symbol,
+                company
+            );
+
+            if (result.added) {
+                setWatchlistSymbols(prev => [
+                    ...prev,
+                    symbol
+                ]);
+            } else {
+                setWatchlistSymbols(prev =>
+                    prev.filter(s => s !== symbol)
+                );
+            }
+        } catch (error) {
+            console.error(
+                "Failed to update watchlist",
+                error
+            );
+        }
+    };
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -27,7 +59,18 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
         window.addEventListener("keydown", onKeyDown)
         return () => window.removeEventListener("keydown", onKeyDown)
     }, [])
+    useEffect(() => {
+        const loadWatchlist = async () => {
+            try {
+                const symbols = await getCurrentUserWatchlistSymbols();
+                setWatchlistSymbols(symbols);
+            } catch (error) {
+                console.error("Failed to load watchlist:", error);
+            }
+        };
 
+        loadWatchlist();
+    }, []);
     const handleSearch = async () => {
         if(!isSearchMode) return setStocks(initialStocks);
 
@@ -99,7 +142,20 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                                                 {stock.symbol} | {stock.exchange } | {stock.type}
                                             </div>
                                         </div>
-                                        <Star className="h-4 w-4 cursor-pointer text-gray-400 hover:text-yellow-500" />
+                                        <Star
+                                            onClick={(e) =>
+                                                handleToggleWatchlist(
+                                                    e,
+                                                    stock.symbol,
+                                                    stock.name
+                                                )
+                                            }
+                                            className={`h-4 w-4 cursor-pointer transition-colors ${
+                                                watchlistSymbols.includes(stock.symbol)
+                                                    ? "fill-yellow-500 text-yellow-500"
+                                                    : "text-gray-400 hover:text-yellow-500"
+                                            }`}
+                                        />
                                     </Link>
                                 </li>
                             ))}
