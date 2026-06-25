@@ -32,9 +32,9 @@ export default function WatchlistTable({
                         <TableHead>Change</TableHead>
                         <TableHead>Market Cap</TableHead>
                         <TableHead>P/E Ratio</TableHead>
-                        <TableHead className="text-right">
-                            Alert
-                        </TableHead>
+                        {/*<TableHead className="text-right">*/}
+                        {/*    Alert*/}
+                        {/*</TableHead>*/}
                     </TableRow>
                 </TableHeader>
 
@@ -71,21 +71,21 @@ export default function WatchlistTable({
                                 35.5
                             </TableCell>
 
-                            <TableCell className="text-right">
-                                <button
-                                    className="
-                                        rounded-md
-                                        bg-orange-500/10
-                                        px-3
-                                        py-1
-                                        text-sm
-                                        text-orange-400
-                                        hover:bg-orange-500/20
-                                    "
-                                >
-                                    Add Alert
-                                </button>
-                            </TableCell>
+                            {/*<TableCell className="text-right">*/}
+                            {/*    <button*/}
+                            {/*        className="*/}
+                            {/*            rounded-md*/}
+                            {/*            bg-orange-500/10*/}
+                            {/*            px-3*/}
+                            {/*            py-1*/}
+                            {/*            text-sm*/}
+                            {/*            text-orange-400*/}
+                            {/*            hover:bg-orange-500/20*/}
+                            {/*        "*/}
+                            {/*    >*/}
+                            {/*        Add Alert*/}
+                            {/*    </button>*/}
+                            {/*</TableCell>*/}
                         </TableRow>
                     ))}
                 </TableBody>
